@@ -1,0 +1,52 @@
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import axios from 'axios';  
+
+ function App() {
+  const [employees, setEmployees] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  
+    useEffect(() => {
+      axios.get('https://reqres.in/api/users?page=2')
+        .then(response => setEmployees(response.data.data))
+        .catch(error => console.error(error));
+    }, []);
+    
+  
+  const handleSearch = e => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredEmployees = employees.filter(employee =>
+    employee.first_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="container"> {/* Add the container class */}
+      <input
+        type="text"
+        placeholder="Search by first name"
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+
+      <div>
+        {filteredEmployees.map(employee => (
+          <div key={employee.id} className="employee-card"> {/* Add the employee-card class */}
+            <div className="avatar-container">
+              <img 
+              src={employee.avatar} 
+              alt={employee.first_name}
+              className="avatar" 
+              />
+            </div>
+            <p className="employee-name">{employee.first_name}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default App;
